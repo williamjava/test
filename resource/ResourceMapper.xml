@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tufire.user.dal.mapper.ResourceMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.tufire.user.dal.entity.Resource" id="resourceMap">
+        <result property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="href" column="href"/>
+        <result property="permission" column="permission"/>
+        <result property="show" column="show"/>
+        <result property="icon" column="icon"/>
+        <result property="sort" column="sort"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedBy" column="updated_by"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="deleted" column="deleted"/>
+    </resultMap>
+
+    <select id="selectListAll" resultMap="resourceMap">
+     select distinct s.id id ,s.parent_id parent_id, s.name 'name',s.href href,s.permission permission,s.show 'show',s.icon icon
+     from co_resource s ,co_role_resource b,co_role_user c
+	  where s.id=b.resource_id and b.role_id=c.role_id and s.deleted='0'
+
+		<if test="userId!=null">
+            and c.user_id=#{userId}
+        </if>
+
+		<if test="appId!=null">
+            and c.app_id=#{appId}
+        </if>
+
+        <if test="roleId!=null">
+           and b.role_id =#{roleId}
+        </if>
+
+		order by s.sort
+    </select>
+
+</mapper>
